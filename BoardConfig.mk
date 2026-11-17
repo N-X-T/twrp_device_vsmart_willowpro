@@ -79,11 +79,12 @@ TARGET_USERIMAGES_USE_F2FS := true
 RECOVERY_SDCARD_ON_DATA := true
 TW_INCLUDE_NTFS_3G := true
 
-# Dynamic Partition
-BOARD_SUPER_PARTITION_SIZE := 6685720576
+# Dynamic Partition & Fastbootd
+BOARD_SUPER_PARTITION_SIZE := 4294967296
 BOARD_SUPER_PARTITION_GROUPS := main
-BOARD_MAIN_SIZE := 6681526272
+BOARD_MAIN_SIZE := 4290772992
 BOARD_MAIN_PARTITION_LIST  := product vendor system
+TW_INCLUDE_FASTBOOTD := true
 
 BOARD_BOOTIMAGE_PARTITION_SIZE := 33554432
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 33554432
@@ -99,23 +100,23 @@ BOARD_ROOT_EXTRA_FOLDERS += metadata
 # System as root
 BOARD_SUPPRESS_SECURE_ERASE := true
 
-# Crypto
-TW_INCLUDE_CRYPTO := true
-TW_INCLUDE_CRYPTO_FBE := true
-TW_INCLUDE_FBE_METADATA_DECRYPT := true
+# Crypto (Disabled for now - skip FBE decryption)
+# TW_INCLUDE_CRYPTO := true
+# TW_INCLUDE_CRYPTO_FBE := true
+# TW_INCLUDE_FBE_METADATA_DECRYPT := true
 
 # Additional binaries & libraries needed for recovery
-TARGET_RECOVERY_DEVICE_MODULES += \
-    libkeymaster4 \
-    libpuresoftkeymasterdevice \
-    ashmemd_aidl_interface-cpp \
-    libashmemd_client
+# TARGET_RECOVERY_DEVICE_MODULES += \
+#     libkeymaster4 \
+#     libpuresoftkeymasterdevice \
+#     ashmemd_aidl_interface-cpp \
+#     libashmemd_client
 
-TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4.so \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so \
-    $(TARGET_OUT_SHARED_LIBRARIES)/ashmemd_aidl_interface-cpp.so \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libashmemd_client.so
+# TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
+#     $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4.so \
+#     $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so \
+#     $(TARGET_OUT_SHARED_LIBRARIES)/ashmemd_aidl_interface-cpp.so \
+#     $(TARGET_OUT_SHARED_LIBRARIES)/libashmemd_client.so
 
 # TWRP specific build flags
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
@@ -125,13 +126,17 @@ TW_DEVICE_VERSION := by_HoangLong
 TW_DEFAULT_LANGUAGE := en
 TARGET_USES_MKE2FS := true
 
+# MTP
+TW_HAS_MTP := true
+TW_MTP_DEVICE := /dev/mtp_usb
+
 # Display
 TW_BRIGHTNESS_PATH := "/sys/class/leds/lcd-backlight/brightness"
-TW_MAX_BRIGHTNESS := 2047
-TW_DEFAULT_BRIGHTNESS := 1200
+TW_MAX_BRIGHTNESS := 255
+TW_DEFAULT_BRIGHTNESS := 150
 TW_SCREEN_BLANK_ON_BOOT := true
-TW_Y_OFFSET := 50
-TW_H_OFFSET := -50
+TW_Y_OFFSET := 0
+TW_H_OFFSET := 0
 
 # Resolution
 TW_THEME := portrait_hdpi

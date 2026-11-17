@@ -4,8 +4,6 @@
 /system_image   emmc                /dev/block/mapper/system                                    flags=backup=1;display="System Image";flashimg=1;wipeingui;
 /vendor         ext4                /dev/block/mapper/vendor                                    wait,avb=vbmeta,logical,first_stage_mount,flags=backup=1;display="Vendor";
 /vendor_image   emmc                /dev/block/mapper/vendor                                    flags=backup=1;display="Vendor Image";flashimg=1;wipeingui;
-/odm            ext4                /dev/block/mapper/odm                                       wait,avb=vbmeta,logical,first_stage_mount,flags=backup=1;display="ODM";
-/odm_image      emmc                /dev/block/mapper/odm                                       flags=backup=1;display="ODM Image";flashimg=1;wipeingui;
 /product        ext4                /dev/block/mapper/product                                   wait,avb=vbmeta,logical,first_stage_mount,flags=backup=1;display="Product";
 /product_image  emmc                /dev/block/mapper/product                                   flags=backup=1;display="Product Image";flashimg=1;wipeingui;
 
@@ -31,7 +29,7 @@
 /vbmeta           emmc     /dev/block/platform/bootdevice/by-name/vbmeta       flags=display="vbmeta";backup=1;flashimg=1
 
 /para             emmc     /dev/block/platform/bootdevice/by-name/para
-/misc             emmc     /dev/block/platform/bootdevice/by-name/misc
+/misc             emmc     /dev/block/platform/bootdevice/by-name/para
 /persistent       emmc     /dev/block/platform/bootdevice/by-name/frp
 
 # Removable storage

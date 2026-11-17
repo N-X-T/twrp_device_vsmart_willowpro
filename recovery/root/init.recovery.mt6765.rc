@@ -15,3 +15,21 @@ on post-fs
     symlink /dev/block/mmcblk0boot0 /dev/block/platform/bootdevice/by-name/preloader_a
     symlink /dev/block/mmcblk0boot1 /dev/block/platform/bootdevice/by-name/preloader_b
 
+    # Symlink by-name directory
+    symlink /dev/block/platform/bootdevice/by-name /dev/block/by-name
+
+    # Symlink para to misc for BCB (fastbootd / clear recovery boot loop)
+    symlink /dev/block/platform/bootdevice/by-name/para /dev/block/platform/bootdevice/by-name/misc
+    symlink /dev/block/platform/bootdevice/by-name/para /dev/block/by-name/misc
+
+    # Smart clear BCB in para: clear boot-recovery to prevent bootloop, preserve boot-fastboot
+    exec u:r:recovery:s0 -- /system/bin/check_bcb.sh
+
+    # OrangeFox startup script & binary symlinks
+    symlink /system/bin/foxstart.sh /sbin/foxstart.sh
+    symlink /system/bin/fastbootd /sbin/fastbootd
+    symlink /system/bin/recovery /sbin/recovery
+
+    # Fstab symlinks for fs_mgr and libbootloader_message
+    symlink /system/etc/recovery.fstab /fstab.mt6765
+    symlink /system/etc/recovery.fstab /etc/recovery.fstab
