@@ -1,9 +1,9 @@
 
-on property:hwservicemanager.ready=true
-    setprop sys.usb.config mtp,adb
-
 on boot
     setprop sys.usb.config mtp,adb
+
+on boot && property:ro.boot.fastboot=1
+    setprop sys.usb.config fastboot
 
 on property:ro.boot.usbcontroller=*
     setprop sys.usb.controller ${ro.boot.usbcontroller}

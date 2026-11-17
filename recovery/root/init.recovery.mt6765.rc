@@ -27,6 +27,7 @@ on post-fs
 
     # OrangeFox startup script & binary symlinks
     symlink /system/bin/foxstart.sh /sbin/foxstart.sh
+    symlink /system/bin/rebootfastboot.sh /sbin/rebootfastboot.sh
     symlink /system/bin/fastbootd /sbin/fastbootd
     symlink /system/bin/recovery /sbin/recovery
 
