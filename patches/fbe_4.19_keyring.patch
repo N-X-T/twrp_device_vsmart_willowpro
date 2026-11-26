@@ -1,0 +1,87 @@
+diff --git a/partition.cpp b/partition.cpp
+index 83e50ea..c037e93 100644
+--- a/partition.cpp
++++ b/partition.cpp
+@@ -725,16 +725,17 @@ void TWPartition::Setup_Data_Partition(bool Display_Error) {
+ 		DataManager::GetValue(TW_IS_FBE, is_device_fbe);
+ 		char crypto_state[255];
+ 		property_get("ro.crypto.state", crypto_state, "error");
+-		if (!Decrypt_FBE_DE() && strcmp(crypto_state, "error") != 0) {
+-			if (is_device_fbe == 1) {
+-			     // check whether the device is encrypted, and, if so, report decryption failure
+-			     if (PartitionManager.Storage_Is_Encrypted() && DataManager::GetStrValue("fox_dfe_formatted") != "1")
+-				LOGERR("Unable to decrypt FBE device\n");
++		if (!Decrypt_FBE_DE()) {
++			if (strcmp(crypto_state, "error") != 0) {
++			     if (is_device_fbe == 1) {
++			          if (PartitionManager.Storage_Is_Encrypted() && DataManager::GetStrValue("fox_dfe_formatted") != "1")
++			               LOGERR("Unable to decrypt FBE device\n");
++			     }
++			} else {
++			     DataManager::SetValue(TW_IS_ENCRYPTED, 0);
++			     if (datamedia)
++			          Setup_Data_Media();
+ 			}
+-		} else {
+-			DataManager::SetValue(TW_IS_ENCRYPTED, 0);
+-			if (datamedia)
+-				Setup_Data_Media();
+ 		}
+ 	}
+ 	if (datamedia && (!Is_Encrypted || (Is_Encrypted && Is_Decrypted))) {
+@@ -1268,7 +1269,8 @@ void TWPartition::Setup_Data_Media() {
+ 			Storage_Path = Mount_Point + "/media/0";
+ 			Symlink_Path = Storage_Path;
+ 			DataManager::SetValue(TW_INTERNAL_PATH, Mount_Point + "/media/0");
+-			UnMount(true);
++			if (!Is_FBE)
++				UnMount(true);
+ 		}
+ 		DataManager::SetValue("tw_has_internal", 1);
+ 		DataManager::SetValue("tw_has_data_media", 1);
+diff --git a/partitionmanager.cpp b/partitionmanager.cpp
+index 9c1a231..1dae2a2 100755
+--- a/partitionmanager.cpp
++++ b/partitionmanager.cpp
+@@ -1898,18 +1898,22 @@ void TWPartitionManager::Post_Decrypt(const string& Block_Device) {
+ 		dat->Current_File_System = dat->Fstab_File_System;  // Needed if we're ignoring blkid because encrypted devices start out as emmc
+ 
+ 		sleep(1); // Sleep for a bit so that the device will be ready
+-		if (dat->Has_Data_Media && dat->Mount(false) && TWFunc::Path_Exists("/data/media/0")) {
+-			dat->Storage_Path = "/data/media/0";
+-			dat->Symlink_Path = dat->Storage_Path;
+-			DataManager::SetValue("tw_storage_path", "/data/media/0");
+-			DataManager::SetValue("tw_settings_path", "/data/media/0");
++		if (dat->Mount(false)) {
++			if (!dat->Has_Data_Media)
++				dat->Setup_Data_Media();
++			if (TWFunc::Path_Exists("/data/media/0")) {
++				dat->Storage_Path = "/data/media/0";
++				dat->Symlink_Path = dat->Storage_Path;
++				Setup_Settings_Storage_Partition(dat);
++			}
+ 		}
+ 		Update_System_Details();
+ 		Output_Partition(dat);
+-		if (!android::base::StartsWith(dat->Actual_Block_Device, "/dev/block/mmcblk")) {
+ 		if (!dat->Bind_Mount(false))
+ 			LOGERR("Unable to bind mount /sdcard to %s\n", dat->Storage_Path.c_str());
+-		}
++		if (dat->MTP_Storage_ID == 0)
++			dat->MTP_Storage_ID = 0x00010002;
++		Add_MTP_Storage(dat->MTP_Storage_ID);
+ 	} else
+ 		LOGERR("Unable to locate data partition.\n");
+ }
+@@ -2043,6 +2047,11 @@ int TWPartitionManager::Decrypt_Device(string Password, int user_id) {
+ 		if (!Mount_By_Path("/data", true)) // /data has to be mounted for FBE
+ 			return -1;
+ 
++		if (!TWFunc::Path_Exists("/data/misc/vold/user_keys/ce/0/current")) {
++			LOGINFO("DE keys missing after mounting /data, reloading via Decrypt_DE...\n");
++			Decrypt_DE();
++		}
++
+ 		bool user_need_decrypt = false;
+ 		std::vector<users_struct>::iterator iter;
+ 		for (iter = Users_List.begin(); iter != Users_List.end(); iter++) {

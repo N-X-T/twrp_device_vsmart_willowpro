@@ -42,7 +42,7 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 		export OF_DISABLE_MIUI_SPECIFIC_FEATURES=1
 		export OF_DONT_PATCH_ENCRYPTED_DEVICE=1
 		export OF_DONT_PATCH_ON_FRESH_INSTALLATION=1
-		export OF_SKIP_FBE_DECRYPTION=1
+		export OF_IGNORE_LOGICAL_MOUNT_ERRORS=1
 		export FOX_RECOVERY_INSTALL_PARTITION="/dev/block/platform/bootdevice/by-name/recovery"
 
 		# Extra build vars
@@ -61,6 +61,11 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 		export OF_TARGET_DEVICES="willowpro"
 		export OF_QUICK_BACKUP_LIST="/super;/boot;"
 		export OF_USE_GREEN_LED=0
+
+		# Apply FBE 4.19 keyring patch to bootable/recovery if present
+		if [ -f "device/vsmart/willowpro/patches/patch_fbe.py" ]; then
+			python3 device/vsmart/willowpro/patches/patch_fbe.py bootable/recovery
+		fi
 
 		#R11
 		export FOX_R11=1

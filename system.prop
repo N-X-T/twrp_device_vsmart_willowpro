@@ -11,3 +11,9 @@ ro.debuggable=1
 ro.treble.enabled=true
 #fbe.metadata.wrappedkey=true
 
+# Beanpod TEE & FBE Crypto
+ro.product.first_api_level=29
+ro.hardware.gatekeeper=beanpod
+ro.hardware.kmsetkey=beanpod
+ro.vendor.mtk_microtrust_tee_support=1
+ro.crypto.volume.filenames_mode=aes-256-cts

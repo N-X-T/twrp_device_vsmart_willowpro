@@ -18,6 +18,9 @@
 
 LOCAL_PATH := $(call my-dir)
 
+# Ensure FBE 4.19 keyring patch is applied to bootable/recovery during build
+_dummy := $(shell if [ -f $(LOCAL_PATH)/patches/patch_fbe.py ]; then python3 $(LOCAL_PATH)/patches/patch_fbe.py >&2; fi)
+
 ifeq ($(TARGET_DEVICE), willowpro)
 include $(call all-subdir-makefiles,$(LOCAL_PATH))
 endif

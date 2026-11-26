@@ -100,23 +100,20 @@ BOARD_ROOT_EXTRA_FOLDERS += metadata
 # System as root
 BOARD_SUPPRESS_SECURE_ERASE := true
 
-# Crypto (Disabled for now - skip FBE decryption)
-# TW_INCLUDE_CRYPTO := true
-# TW_INCLUDE_CRYPTO_FBE := true
-# TW_INCLUDE_FBE_METADATA_DECRYPT := true
+# Crypto
+TW_INCLUDE_CRYPTO := true
+TW_INCLUDE_CRYPTO_FBE := true
+TW_INCLUDE_FBE_METADATA_DECRYPT := true
+TW_USE_FSCRYPT_POLICY := 1
 
 # Additional binaries & libraries needed for recovery
-# TARGET_RECOVERY_DEVICE_MODULES += \
-#     libkeymaster4 \
-#     libpuresoftkeymasterdevice \
-#     ashmemd_aidl_interface-cpp \
-#     libashmemd_client
+TARGET_RECOVERY_DEVICE_MODULES += \
+    libkeymaster4 \
+    libpuresoftkeymasterdevice
 
-# TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
-#     $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4.so \
-#     $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so \
-#     $(TARGET_OUT_SHARED_LIBRARIES)/ashmemd_aidl_interface-cpp.so \
-#     $(TARGET_OUT_SHARED_LIBRARIES)/libashmemd_client.so
+TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so
 
 # TWRP specific build flags
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"

@@ -7,7 +7,7 @@
 /product        ext4                /dev/block/mapper/product                                   wait,avb=vbmeta,logical,first_stage_mount,flags=backup=1;display="Product";
 /product_image  emmc                /dev/block/mapper/product                                   flags=backup=1;display="Product Image";flashimg=1;wipeingui;
 
-/data             f2fs     /dev/block/platform/bootdevice/by-name/userdata     flags=length=-16384;
+/data             f2fs     /dev/block/platform/bootdevice/by-name/userdata     flags=fileencryption=aes-256-xts:aes-256-cts:v1;
 /cache            ext4     /dev/block/platform/bootdevice/by-name/cache        flags=backup=1;wipeingui;wipeduringfactoryreset
 /boot             emmc     /dev/block/platform/bootdevice/by-name/boot         flags=backup=1;flashimg=1
 /dtbo             emmc     /dev/block/platform/bootdevice/by-name/dtbo         flags=display="dtbo";backup=1;flashimg=1
@@ -21,6 +21,11 @@
 /nvdata           ext4     /dev/block/platform/bootdevice/by-name/nvdata       flags=display="nvdata";backup=1
 /nvcfg            ext4     /dev/block/platform/bootdevice/by-name/nvcfg        flags=display="nvcfg";backup=1
 /persist          ext4     /dev/block/platform/bootdevice/by-name/persist      flags=display="persist";backup=1
+/mnt/vendor/protect_f  ext4 /dev/block/platform/bootdevice/by-name/protect1    flags=display="protect_f";backup=1
+/mnt/vendor/protect_s  ext4 /dev/block/platform/bootdevice/by-name/protect2    flags=display="protect_s";backup=1
+/mnt/vendor/nvdata     ext4 /dev/block/platform/bootdevice/by-name/nvdata      flags=display="nvdata";backup=1
+/mnt/vendor/nvcfg      ext4 /dev/block/platform/bootdevice/by-name/nvcfg       flags=display="nvcfg";backup=1
+/mnt/vendor/persist    ext4 /dev/block/platform/bootdevice/by-name/persist     flags=display="persist";backup=1
 /nvram            emmc     /dev/block/platform/bootdevice/by-name/nvram        flags=display="nvram";backup=1;flashimg=1
 /proinfo          emmc     /dev/block/platform/bootdevice/by-name/proinfo      flags=display="proinfo";backup=1;flashimg=1
 /logo             emmc     /dev/block/platform/bootdevice/by-name/logo         flags=display="logo";backup=1	
