@@ -51,13 +51,18 @@ on fs
     chmod 0660 /dev/emmcrpmb0
     chown system system /dev/emmcrpmb0
 
-    # Mount persist so /mnt/vendor/persist/rpmb is ready before teei_daemon starts
+    # Permissions for hardware RPMB block device
+    chmod 0660 /dev/mmcblk0rpmb
+    chown root system /dev/mmcblk0rpmb
+    symlink /dev/mmcblk0rpmb /dev/emmcrpmb0
+
+    # Mount persist to BOTH /mnt/vendor/persist AND /persist before teei_daemon starts
     mkdir /mnt/vendor 0775 root system
     mkdir /mnt/vendor/persist 0771 system system
     mount ext4 /dev/block/platform/bootdevice/by-name/persist /mnt/vendor/persist wait
     mkdir /mnt/vendor/persist/rpmb 0771 system system
     mkdir /persist 0771 system system
-    mkdir /persist/rpmb 0771 system system
+    mount ext4 /dev/block/platform/bootdevice/by-name/persist /persist wait
 
     start teei_daemon
 
