@@ -49,3 +49,5 @@ Khi chỉnh sửa mã nguồn trong thư mục này, luôn tuân thủ các quy 
   - Khởi tạo `Setup_Data_Media()` gán `tw_has_internal=1` và `Storage_Name = "Internal Storage"`.
   - Bind-mount `/data/media/0` vào `/sdcard` (không chặn thiết bị eMMC `mmcblk`).
   - Gửi tín hiệu `Add_MTP_Storage` nạp bộ nhớ trong vào MTP daemon.
+- Phân vùng `persist` (`/dev/block/platform/bootdevice/by-name/persist`) bắt buộc phải được mount vào CẢ HAI đường dẫn `/mnt/vendor/persist` và `/persist` ngay tại trigger `on fs` trong `init.recovery.teei_daemon.rc` trước khi gọi `start teei_daemon`. Tuyệt đối không tạo thư mục tạm `/persist/rpmb` trên ramdisk vì `teei_daemon` sẽ ưu tiên đọc ramdisk rỗng thay vì dữ liệu RPMB thật của máy, gây lỗi Gatekeeper `search uid failed` khi mở khóa bằng mã PIN.
+- Node phần cứng RPMB `/dev/mmcblk0rpmb` phải được phân quyền `chmod 0660` và `chown root system`, kèm symlink `/dev/mmcblk0rpmb -> /dev/emmcrpmb0` để TEE HAL và Gatekeeper TA truy cập được bộ nhớ bảo mật.
