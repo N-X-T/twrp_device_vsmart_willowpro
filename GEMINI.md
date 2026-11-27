@@ -38,3 +38,14 @@ Khi chỉnh sửa mã nguồn trong thư mục này, luôn tuân thủ các quy 
 ## 5. Khai báo phân vùng lưu trữ
 - Không khai báo mountpoint `auto` với cờ `voldmanaged` trong `recovery.fstab`.
 - Khai báo thẻ nhớ ngoài và OTG độc quyền trong `twrp.flags` dưới dạng `/external_sd` và `/usb-otg`.
+
+## 6. Giải mã /data (FBE v1, Kernel 4.19 & Beanpod Keymaster 4.0)
+- Thiết bị sử dụng FBE v1 kết hợp Microtrust Beanpod TEE (`teei_daemon`, Keymaster 4.0, Gatekeeper 1.0).
+- Kernel 4.19 quản lý khóa fscrypt gắn liền với superblock của `/data` (`FS_IOC_ADD_ENCRYPTION_KEY`). Tuyệt đối không unmount `/data` sau khi nạp khóa DE vì sẽ xóa sạch keyring trong kernel.
+- Bản vá tự động cho `bootable/recovery` nằm tại `patches/patch_fbe.py` và `patches/fbe_4.19_keyring.patch`.
+- Trong `Android.mk`, lệnh gọi script vá bắt buộc phải gán vào biến dummy và xuất log ra stderr:
+  `_dummy := $(shell if [ -f $(LOCAL_PATH)/patches/patch_fbe.py ]; then python3 $(LOCAL_PATH)/patches/patch_fbe.py >&2; fi)`
+- Sau khi User 0 giải mã thành công trong `Post_Decrypt()`, recovery phải tự động:
+  - Khởi tạo `Setup_Data_Media()` gán `tw_has_internal=1` và `Storage_Name = "Internal Storage"`.
+  - Bind-mount `/data/media/0` vào `/sdcard` (không chặn thiết bị eMMC `mmcblk`).
+  - Gửi tín hiệu `Add_MTP_Storage` nạp bộ nhớ trong vào MTP daemon.
